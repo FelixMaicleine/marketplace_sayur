@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: backend-api-sayur
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=db_sayur
+      - JWT_SECRET=supersecretkey
+    depends_on:
+      - mysql
+    networks:
+      - sayur-network
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=db_sayur
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - sayur-network
+
+  frontend:
+    container_name: fontend-sayur
+    build: ./frontend
+    restart: always
+    ports:
+      - "3000:80"   # kiri = host, kanan = nginx port
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    networks:
+      - sayur-network
+
+
+networks:
+  sayur-network:
+
+volumes:
+  mysql-data:
