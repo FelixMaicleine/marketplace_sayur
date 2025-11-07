@@ -59,17 +59,27 @@ jobs:
             # Pindah ke direktori proyek di VM Anda
             cd ${{ secrets.PROJECT_PATH }}
             
-            # ▼▼▼ TAMBAHKAN BARIS INI ▼▼▼
-            # Memastikan semua file (termasuk docker-compose.yml) adalah versi terbaru
+            # 1. Memastikan semua file (termasuk docker-compose.yml) adalah versi terbaru
             echo "Pulling latest code from GitHub..."
-            git pull
+            git pull origin main  # Lebih aman pakai 'origin main'
             
-            # Mengambil image terbaru dari Docker Hub
+            # 2. Mengambil image terbaru dari Docker Hub
+            #    PERHATIKAN: pakai 'compose' (spasi), bukan 'compose' (hyphen)
             echo "Pulling latest images..."
-            docker-compose pull
+            docker compose pull
             
-            # Merestart service backend dan frontend saja
-            echo "Restarting services..."
-            docker-compose up -d 
+            # 3. Hentikan dan Hapus semua container LAMA
+            #    Ini adalah cara terbersih, pakai 'compose' (spasi)
+            echo "Stopping old containers..."
+            docker compose down
+            
+            # 4. Nyalakan semua container BARU dari awal
+            #    Ini akan membaca 'docker-compose.yml' baru dan membuat container baru
+            echo "Starting new containers..."
+            docker compose up -d 
+            
+            # 5. (Opsional) Membersihkan image lama
+            echo "Cleaning up old images..."
+            docker image prune -f
             
             echo "Deployment complete!"
