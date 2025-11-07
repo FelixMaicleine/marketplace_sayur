@@ -62,7 +62,7 @@ jobs:
             # ▼▼▼ TAMBAHKAN BARIS INI ▼▼▼
             # Memastikan semua file (termasuk docker-compose.yml) adalah versi terbaru
             echo "Pulling latest code from GitHub..."
-            git pull origin main
+            git pull
             
             # Mengambil image terbaru dari Docker Hub
             echo "Pulling latest images..."
@@ -70,10 +70,6 @@ jobs:
             
             # Merestart service backend dan frontend saja
             echo "Restarting services..."
-            docker-compose up -d --no-deps backend frontend
-            
-            # (Opsional) Membersihkan image lama yang tidak terpakai
-            echo "Cleaning up old images..."
-            docker image prune -f
+            docker-compose up -d 
             
             echo "Deployment complete!"
