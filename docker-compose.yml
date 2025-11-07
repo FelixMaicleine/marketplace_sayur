@@ -2,8 +2,7 @@ version: "3.9"
 
 services:
   backend:
-    build:
-      context: ./backend
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest
     container_name: backend-api-sayur
     ports:
       - "5000:5000"
@@ -33,18 +32,17 @@ services:
       - sayur-network
 
   frontend:
-    container_name: fontend-sayur
-    build: ./frontend
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
+    container_name: frontend-sayur
     restart: always
     ports:
-      - "3000:80"   # kiri = host, kanan = nginx port
+      - "3000:80"
     environment:
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=http://34.143.168.92:5000
     depends_on:
       - backend
     networks:
       - sayur-network
-
 
 networks:
   sayur-network:
