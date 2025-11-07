@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   backend:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest
+    image: felixmaicleine/sayur-backend:latest
     container_name: backend-api-sayur
     ports:
       - "5000:5000"
@@ -32,7 +32,7 @@ services:
       - sayur-network
 
   frontend:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
+    image: felixmaicleine/sayur-frontend:latest
     container_name: frontend-sayur
     restart: always
     ports:
