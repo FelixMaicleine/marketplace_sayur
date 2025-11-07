@@ -59,13 +59,16 @@ jobs:
             # Pindah ke direktori proyek di VM Anda
             cd ${{ secrets.PROJECT_PATH }}
             
+            # ▼▼▼ TAMBAHKAN BARIS INI ▼▼▼
+            # Memastikan semua file (termasuk docker-compose.yml) adalah versi terbaru
+            echo "Pulling latest code from GitHub..."
+            git pull origin main
+            
             # Mengambil image terbaru dari Docker Hub
             echo "Pulling latest images..."
             docker-compose pull
             
             # Merestart service backend dan frontend saja
-            # Kita tidak perlu restart 'mysql'
-            # '--no-deps' mencegah 'backend' merestart 'mysql'
             echo "Restarting services..."
             docker-compose up -d --no-deps backend frontend
             
