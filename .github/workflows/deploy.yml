@@ -37,7 +37,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
           build-args: |
-            REACT_APP_API_URL=http://34.143.168.92:5000
+            REACT_APP_API_URL=http://34.143.168.92:5000/
 
   # =======================================================
   # ▼▼▼▼▼ JOB BARU UNTUK CONTINUOUS DEPLOYMENT (CD) ▼▼▼▼▼
