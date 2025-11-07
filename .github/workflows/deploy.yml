@@ -37,4 +37,40 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
           build-args: |
-            REACT_APP_API_URL=http://34.143.168.92:5000/
+            REACT_APP_API_URL=http://backend:5000
+
+  # =======================================================
+  # ▼▼▼▼▼ JOB BARU UNTUK CONTINUOUS DEPLOYMENT (CD) ▼▼▼▼▼
+  # =======================================================
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # <-- Menandakan job 'deploy' baru akan jalan SETELAH job 'build' sukses
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # <-- Hanya jalan saat PUSH ke branch MAIN (bukan PR)
+
+    steps:
+      - name: Deploy to GCP VM via SSH
+        uses: appleboy/ssh-action@v1.0.3 # <-- Action untuk menjalankan perintah SSH
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Pindah ke direktori proyek di VM Anda
+            cd ${{ secrets.PROJECT_PATH }}
+            
+            # Mengambil image terbaru dari Docker Hub
+            echo "Pulling latest images..."
+            docker-compose pull
+            
+            # Merestart service backend dan frontend saja
+            # Kita tidak perlu restart 'mysql'
+            # '--no-deps' mencegah 'backend' merestart 'mysql'
+            echo "Restarting services..."
+            docker-compose up -d --no-deps backend frontend
+            
+            # (Opsional) Membersihkan image lama yang tidak terpakai
+            echo "Cleaning up old images..."
+            docker image prune -f
+            
+            echo "Deployment complete!"

@@ -20,3 +20,6 @@ backend/.env
 # VSCode / editor
 .vscode/
 .DS_Store
+
+gcp-deploy-key
+gcp-deploy-key.pub
