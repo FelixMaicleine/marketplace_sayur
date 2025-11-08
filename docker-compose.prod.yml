@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  backend:
+    # 1. 'image' ini akan MENIMPA 'build:' dari file utama
+    image: felixmaicleine/sayur-backend:latest
+    # 2. 'environment' ini MENIMPA 'environment' dari file utama
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=db_sayur
+      - JWT_SECRET=supersecretkey
+
+  mysql:
+    # 1. Pastikan 'environment' produksi juga di-override
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=db_sayur
+
+  frontend:
+    # 1. 'image' ini akan MENIMPA 'build:' dari file utama
+    image: felixmaicleine/sayur-frontend:latest
+    # 2. Kita tidak perlu environment di sini karena REACT_APP_API_URL
+    #    sudah di-build ke dalam image (oleh job 'build' di deploy.yml)

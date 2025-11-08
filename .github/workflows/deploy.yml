@@ -37,19 +37,20 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
           build-args: |
+            # Ini sudah benar, ini bake IP publik ke image PRODUKSI
             REACT_APP_API_URL=http://34.143.168.92:5000/
 
   # =======================================================
-  # ▼▼▼▼▼ JOB BARU UNTUK CONTINUOUS DEPLOYMENT (CD) ▼▼▼▼▼
+  # ▼▼▼▼▼ JOB DEPLOYMENT (CD) YANG SUDAH DIPERBARUI ▼▼▼▼▼
   # =======================================================
   deploy:
     runs-on: ubuntu-latest
-    needs: build # <-- Menandakan job 'deploy' baru akan jalan SETELAH job 'build' sukses
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # <-- Hanya jalan saat PUSH ke branch MAIN (bukan PR)
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Deploy to GCP VM via SSH
-        uses: appleboy/ssh-action@v1.0.3 # <-- Action untuk menjalankan perintah SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -59,24 +60,26 @@ jobs:
             # Pindah ke direktori proyek di VM Anda
             cd ${{ secrets.PROJECT_PATH }}
             
-            # 1. Memastikan semua file (termasuk docker-compose.yml) adalah versi terbaru
+            # 1. Pull kode terbaru (mengambil 'docker-compose.yml' 
+            #    DAN 'docker-compose.prod.yml' baru)
             echo "Pulling latest code from GitHub..."
-            git pull origin main  # Lebih aman pakai 'origin main'
+            git pull origin main
             
-            # 2. Mengambil image terbaru dari Docker Hub
-            #    PERHATIKAN: pakai 'compose' (spasi), bukan 'compose' (hyphen)
+            # 2. Tentukan file-file yang akan dipakai
+            #    Ini adalah kunci utamanya: menggabungkan base file dan prod file
+            COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
+
+            # 3. Pull image produksi (menggunakan image: dari prod file)
+            #    PERHATIKAN: 'docker compose' (PAKAI SPASI, v2)
             echo "Pulling latest images..."
-            docker-compose pull
+            docker-compose $COMPOSE_FILES pull
             
-            # 3. Hentikan dan Hapus semua container LAMA
-            #    Ini adalah cara terbersih, pakai 'compose' (spasi)
+            # 4. Hentikan container lama (jika ada)
             echo "Stopping old containers..."
-            docker-compose down
+            docker-compose $COMPOSE_FILES down
             
-            # 4. Nyalakan semua container BARU dari awal
-            #    Ini akan membaca 'docker-compose.yml' baru dan membuat container baru
+            # 5. Nyalakan container baru menggunakan konfigurasi gabungan
             echo "Starting new containers..."
-            docker-compose up -d 
-            
+            docker-compose $COMPOSE_FILES up -d 
             
             echo "Deployment complete!"
