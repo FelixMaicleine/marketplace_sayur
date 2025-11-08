@@ -76,3 +76,16 @@ Petunjuk Penggunaan Web (fitur-fitur utama)
 URL Web Live
 Frontend (Website): http://34.143.168.92:3000/
 Backend (API): http://34.143.168.92:5000/
+
+Link Video
+Izin mohon memberi penjelasan Pak
+Kami memiliki 2 video karena saat video pertama sedang demo terdapat sedikit bug sehingga proses CD eror 
+lalu kami lanjut pada video ke 2. Mohon Izin ya Pak terima kasih banyak pengertiannya.
+
+link vid pertama 
+https://mikroskilacid-my.sharepoint.com/:v:/g/personal/221113232_students_mikroskil_ac_id/EWyc3b8rb1pCgJ2lLPUoJooBcK5MbcYEhsJuB0k2vCaRWw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=H1ULc1
+
+link vid kedua 
+https://mikroskilacid-my.sharepoint.com/:v:/g/personal/221113232_students_mikroskil_ac_id/EauezjaKMx1Pj_LI3nduagEBVIVYyx9FKrjtNq3SVMMW4Q?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=vLJiLC
+
+link project onedrive: https://mikroskilacid-my.sharepoint.com/:f:/g/personal/221111389_students_mikroskil_ac_id/Es1xcWqlKv9KrQKl8WHE7L0B865fMeRH54cD2kzMHb8Jdw?e=FGb9NY
