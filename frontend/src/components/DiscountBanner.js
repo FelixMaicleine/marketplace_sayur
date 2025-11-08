@@ -24,7 +24,7 @@ const DiscountBanner = () => {
 
       <div className="relative z-10 flex justify-between items-center w-full px-6">
         <div>
-          <h2 className="text-2xl font-bold">Diskon Sayur Segar 20%</h2>
+          <h2 className="text-2xl font-bold">Diskon Sayur Segar 10%</h2>
           <p className="text-sm">
             Nikmati sayuran sehat langsung dari petani ke rumah Anda
           </p>
