@@ -7,9 +7,6 @@ on:
   pull_request:
 
 jobs:
-  # =======================================================
-  # ▼▼▼▼▼ JOB LAMA 'build' SEKARANG MENJADI 'build_and_test' ▼▼▼▼▼
-  # =======================================================
   build_and_test:
     name: 1. Build, Test, and Push Images
     runs-on: ubuntu-latest
@@ -21,34 +18,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # -----------------------------------------------------------------
-      # LANGKAH 1: BUILD IMAGE (TAPI JANGAN DI-PUSH DULU)
-      # Kita build dan 'load' ke 'local docker daemon' di runner
-      # Kita beri tag 'local' untuk sementara
-      # -----------------------------------------------------------------
       - name: Build Backend Image (Lokal)
         uses: docker/build-push-action@v6
         with:
           context: ./backend
-          load: true # <-- PENTING: Load ke local docker, jangan push
+          load: true 
           push: false 
-          tags: sayur-backend-local:test # <-- Tag lokal sementara
+          tags: sayur-backend-local:test 
 
-      - name: Build Frontend Image (Lokal)
+      - name: Build Frontend Image (Lokal untuk Tes)
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          load: true # <-- PENTING: Load ke local docker, jangan push
+          load: true 
           push: false
-          tags: sayur-frontend-local:test # <-- Tag lokal sementara
+          tags: sayur-frontend-local:test 
           build-args: |
-            # Kita pakai URL localhost karena akan dites di runner
+            # Ini BENAR untuk testing di runner
             REACT_APP_API_URL=http://localhost:5000/ 
 
-      # -----------------------------------------------------------------
-      # LANGKAH 2: BUAT FILE .env UNTUK TESTING
-      # docker-compose.yml Anda butuh file .env
-      # -----------------------------------------------------------------
       - name: Create .env file for testing
         run: |
           echo "DB_USER=testuser" > .env
@@ -57,11 +45,6 @@ jobs:
           echo "JWT_SECRET=testsecret" >> .env
           echo "REACT_APP_API_URL=http://localhost:5000/" >> .env
 
-      # -----------------------------------------------------------------
-      # LANGKAH 3: JALANKAN CONTAINER UNTUK DITES
-      # Kita gunakan docker-compose.yml (YANG MENGGUNAKAN 'build:')
-      # TAPI Docker akan pintar dan menggunakan image 'local' yang baru kita build
-      # -----------------------------------------------------------------
       - name: Start Containers via Docker Compose
         run: docker compose -f docker-compose.yml up -d
 
@@ -72,51 +55,48 @@ jobs:
           echo "Daftar container yang berjalan:"
           docker ps
 
-      # -----------------------------------------------------------------
-      # LANGKAH 4: LAKUKAN "SANITY TEST"
-      # Kita tes apakah port 3000 (frontend) dan 5000 (backend) merespon
-      # 'curl -f' akan gagal (exit code > 0) jika HTTP status bukan 2xx
-      # -----------------------------------------------------------------
       - name: Test Frontend (Port 3000)
         run: curl -f http://localhost:3000/
 
       - name: Test Backend (Port 5000)
-        run: curl -f http://localhost:5000/ # Ganti ini jika Anda punya /health endpoint
+        run: curl -f http://localhost:5000/
 
-      # -----------------------------------------------------------------
-      # LANGKAH 5: BERSIHKAN (HENTIKAN CONTAINER TES)
-      # Ini akan selalu berjalan, walaupun tes di atas gagal
-      # -----------------------------------------------------------------
       - name: Stop Test Containers
-        if: always() # <-- PENTING: Selalu jalankan ini
+        if: always() 
         run: docker compose -f docker-compose.yml down
 
-      # -----------------------------------------------------------------
-      # LANGKAH 6: PUSH KE DOCKER HUB (HANYA JIKA TES LOLOS)
-      # Langkah ini hanya akan berjalan jika 'curl' di atas SUKSES
-      # -----------------------------------------------------------------
+      # --- TAHAP PUSH (SETELAH TES LOLOS) ---
+
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOKCERHUB_USERNAME }} # Perbaiki typo DOKCERHUB
+          password: ${{ secrets.DOKCERHUB_TOKEN }} # Perbaiki typo DOKCERHUB
 
-      - name: Tag and Push Backend Image
+      - name: Tag and Push Backend Image (dari versi lokal)
         run: |
-          docker tag sayur-backend-local:test ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest
+          docker tag sayur-backend-local:test ${{ secrets.DOKCERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOKCERHUB
+          docker push ${{ secrets.DOKCERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOKCERHUB
           
-      - name: Tag and Push Frontend Image
-        run: |
-          docker tag sayur-frontend-local:test ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
+      # =======================================================
+      # ▼▼▼▼▼ INI BAGIAN YANG DIPERBAIKI ▼▼▼▼▼
+      # =======================================================
+      - name: Build and Push Frontend Image (Production)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true # <-- Langsung push ke Docker Hub
+          tags: ${{ secrets.DOKCERHUB_USERNAME }}/sayur-frontend:latest # Perbaiki typo DOKCERHUB
+          build-args: |
+            # INI KUNCINYA: Gunakan IP Publik untuk build 'final'
+            REACT_APP_API_URL=http://34.143.168.92:5000/
 
   # =======================================================
   # ▼ JOB DEPLOYMENT (CD) - TIDAK BERUBAH
   # =======================================================
   deploy:
     runs-on: ubuntu-latest
-    needs: build_and_test # <-- Ganti 'needs' menjadi nama job baru
+    needs: build_and_test 
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
@@ -129,18 +109,12 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.PROJECT_PATH }}
-            echo "Pulling latest code from GitHub..."
             git pull origin main
             
             COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
 
-            echo "Pulling latest images..."
-            docker-compose $COMPOSE_FILES pull
-            
-            echo "Stopping old containers..."
-            docker-compose $COMPOSE_FILES down
-            
-            echo "Starting new containers..."
-            docker-compose $COMPOSE_FILES up -d 
+            docker compose $COMPOSE_FILES pull
+            docker compose $COMPOSE_FILES down
+            docker compose $COMPOSE_FILES up -d 
             
             echo "Deployment complete!"
