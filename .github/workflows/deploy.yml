@@ -113,8 +113,8 @@ jobs:
             
             COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
 
-            docker compose $COMPOSE_FILES pull
-            docker compose $COMPOSE_FILES down
-            docker compose $COMPOSE_FILES up -d 
+            docker-compose $COMPOSE_FILES pull
+            docker-compose $COMPOSE_FILES down
+            docker-compose $COMPOSE_FILES up -d 
             
             echo "Deployment complete!"
