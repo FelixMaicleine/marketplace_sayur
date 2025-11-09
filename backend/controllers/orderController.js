@@ -1,6 +1,5 @@
 const db = require('../models/db');
 
-// Ambil semua order user (ongoing + done)
 exports.getUserOrders = (req, res) => {
   const { userId } = req.params;
   const sql = `
@@ -21,7 +20,6 @@ exports.getUserOrders = (req, res) => {
       (err2, items) => {
         if (err2) return res.status(500).json({ error: err2.message });
 
-        // Kelompokkan item ke masing-masing order
         const result = orders.map(order => ({
           ...order,
           items: items
@@ -39,7 +37,6 @@ exports.getUserOrders = (req, res) => {
   });
 };
 
-// Admin - lihat semua order
 exports.getAllOrders = (req, res) => {
   const sql = `
     SELECT o.*, u.username
@@ -67,7 +64,6 @@ exports.getAllOrders = (req, res) => {
   });
 };
 
-// Update status order (misal mark as done)
 exports.markOrderDone = (req, res) => {
   const { orderId } = req.params;
   db.query(

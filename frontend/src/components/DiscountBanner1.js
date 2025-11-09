@@ -5,15 +5,15 @@ import "aos/dist/aos.css";
 const DiscountBanner1 = () => {
   useEffect(() => {
     AOS.init({
-      duration: 1000, // durasi animasi
+      duration: 1000, 
       easing: "ease-out",
-      once: true, // animasi hanya sekali saat scroll
+      once: true, 
     });
   }, []);
 
   return (
     <div
-      data-aos="fade-right" // animasi fade dari kiri ke kanan
+      data-aos="fade-right" 
       className="relative h-32 flex items-center justify-between text-white mx-1 my-4 rounded-lg overflow-hidden"
     >
       {/* overlay orange transparan */}

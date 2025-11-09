@@ -5,9 +5,9 @@ import "aos/dist/aos.css";
 const AboutUs = () => {
   useEffect(() => {
     AOS.init({
-      duration: 800, // durasi animasi dalam ms
-      easing: "ease-out", // efek easing
-      once: true, // animasi hanya sekali saat scroll
+      duration: 800, 
+      easing: "ease-out", 
+      once: true, 
     });
   }, []);
 

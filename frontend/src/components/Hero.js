@@ -26,7 +26,6 @@ const slides = [
 const Hero = () => {
   const [current, setCurrent] = useState(0);
 
-  // Auto-slide setiap 10 detik
   useEffect(() => {
     const interval = setInterval(
       () => setCurrent((prev) => (prev + 1) % slides.length),

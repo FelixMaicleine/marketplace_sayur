@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 const Register = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState(""); // dummy
+  const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);

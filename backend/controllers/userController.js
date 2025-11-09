@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 
-// Register user
 exports.register = (req, res) => {
   const { username, password, role } = req.body;
   const hashedPassword = bcrypt.hashSync(password, saltRounds);
@@ -18,7 +17,6 @@ exports.register = (req, res) => {
   );
 };
 
-// Login user
 exports.login = (req, res) => {
   const { username, password } = req.body;
   db.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
@@ -48,7 +46,6 @@ exports.login = (req, res) => {
   });
 };
 
-// Get all users
 exports.getAllUsers = (req, res) => {
   db.query('SELECT id, username, role FROM users', (err, results) => {
     if (err) return res.status(500).json({ error: err.message });

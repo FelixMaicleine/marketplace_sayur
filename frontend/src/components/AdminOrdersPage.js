@@ -8,7 +8,7 @@ const AdminOrdersPage = () => {
   const [refresh, setRefresh] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [activeTab, setActiveTab] = useState("ongoing"); // ongoing / done
+  const [activeTab, setActiveTab] = useState("ongoing"); 
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -45,7 +45,6 @@ const AdminOrdersPage = () => {
 
   if (loading) return <div className="text-center py-10">Loading data pesanan...</div>;
 
-  // filter berdasarkan status tab
   const filteredOrders =
     activeTab === "ongoing"
       ? orders.filter((o) => o.status !== "done")

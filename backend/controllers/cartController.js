@@ -1,6 +1,5 @@
 const db = require('../models/db');
 
-// Tambah item ke cart
 exports.addToCart = (req, res) => {
   const { user_id, sayur_id, quantity } = req.body;
 
@@ -8,7 +7,6 @@ exports.addToCart = (req, res) => {
     return res.status(400).json({ error: "Data tidak lengkap" });
   }
 
-  // Cek dulu apakah item sudah ada
   const checkSql = "SELECT quantity FROM cart WHERE user_id = ? AND sayur_id = ?";
   db.query(checkSql, [user_id, sayur_id], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -17,14 +15,12 @@ exports.addToCart = (req, res) => {
       const newQty = results[0].quantity + quantity;
 
       if (newQty <= 0) {
-        // Kalau quantity hasilnya 0 atau kurang → hapus dari cart
         const deleteSql = "DELETE FROM cart WHERE user_id = ? AND sayur_id = ?";
         db.query(deleteSql, [user_id, sayur_id], (err2) => {
           if (err2) return res.status(500).json({ error: err2.message });
           return res.json({ message: "Item dihapus dari cart" });
         });
       } else {
-        // Update quantity
         const updateSql = "UPDATE cart SET quantity = ? WHERE user_id = ? AND sayur_id = ?";
         db.query(updateSql, [newQty, user_id, sayur_id], (err2) => {
           if (err2) return res.status(500).json({ error: err2.message });
@@ -32,7 +28,6 @@ exports.addToCart = (req, res) => {
         });
       }
     } else {
-      // Item belum ada di cart → tambah baru
       const insertSql = "INSERT INTO cart (user_id, sayur_id, quantity) VALUES (?, ?, ?)";
       db.query(insertSql, [user_id, sayur_id, quantity], (err2) => {
         if (err2) return res.status(500).json({ error: err2.message });
@@ -42,8 +37,6 @@ exports.addToCart = (req, res) => {
   });
 };
 
-
-// Ambil semua item di cart user
 exports.getCart = (req, res) => {
   const { userId } = req.params;
   const sql = `
@@ -64,7 +57,6 @@ exports.getCart = (req, res) => {
   });
 };
 
-// Checkout
 exports.checkout = (req, res) => {
   const { user_id } = req.body;
 
@@ -79,7 +71,6 @@ exports.checkout = (req, res) => {
       if (items.length === 0)
         return res.status(400).json({ error: 'Cart kosong' });
 
-      // Cek stok
       for (const item of items) {
         if (item.stok < item.quantity) {
           return res.status(400).json({ error: `Stok tidak cukup untuk ${item.sayur_id}` });
@@ -92,7 +83,6 @@ exports.checkout = (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         const orderId = result.insertId;
 
-        // Insert ke order_items
         const orderItems = items.map(i => [orderId, i.sayur_id, i.quantity, i.harga]);
         db.query(
           `INSERT INTO order_items (order_id, sayur_id, quantity, price) VALUES ?`,
@@ -100,12 +90,10 @@ exports.checkout = (req, res) => {
           (err2) => {
             if (err2) return res.status(500).json({ error: err2.message });
 
-            // Kurangi stok sayur
             items.forEach(i => {
               db.query(`UPDATE sayur SET stok = stok - ? WHERE id = ?`, [i.quantity, i.sayur_id]);
             });
 
-            // Kosongkan cart
             db.query(`DELETE FROM cart WHERE user_id = ?`, [user_id]);
 
             res.json({ message: 'Checkout berhasil', orderId });

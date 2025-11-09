@@ -35,7 +35,6 @@ const SayurForm = ({ onSuccess }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // Reset form setelah submit
       setNama("");
       setHarga("");
       setStok("");
@@ -47,7 +46,6 @@ const SayurForm = ({ onSuccess }) => {
   theme: "colored",
 });
 
-// Tambahkan delay sebelum refresh data
 setTimeout(() => {
   if (onSuccess) onSuccess();
 }, 1800);

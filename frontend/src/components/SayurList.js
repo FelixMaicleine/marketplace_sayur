@@ -22,7 +22,6 @@ const SayurList = ({ user }) => {
     if (role === "user" && user?.id) fetchCart();
   }, []);
 
-  // 🔹 Ambil daftar sayur
   const fetchSayur = async () => {
     try {
       const res = await API.get("/sayur");
@@ -33,7 +32,6 @@ const SayurList = ({ user }) => {
     }
   };
 
-  // 🔹 Ambil data cart dari backend
   const fetchCart = async () => {
     try {
       const res = await API.get(`/cart/${user.id}`);
@@ -47,7 +45,6 @@ const SayurList = ({ user }) => {
     }
   };
 
-  // 🔹 Tambahkan ke cart (backend)
   const handleAdd = async (sayur_id) => {
     try {
       await API.post("/cart/add", {
@@ -61,7 +58,6 @@ const SayurList = ({ user }) => {
     }
   };
 
-  // 🔹 Kurangi dari cart (frontend + optional backend hapus kalau quantity 0)
   const handleRemove = async (sayur_id) => {
   try {
     await API.post("/cart/add", {
@@ -70,7 +66,6 @@ const SayurList = ({ user }) => {
       quantity: -1,
     });
 
-    // Update frontend sesuai backend: kalau quantity sekarang = 1, hapus; kalau >1, kurangi
     setCart((prev) => {
       const currentQty = prev[sayur_id] || 0;
       const newQty = currentQty - 1;
@@ -88,12 +83,10 @@ const SayurList = ({ user }) => {
 };
 
 
-  // 🔹 Menuju halaman cart
   const goToCart = () => {
     navigate("/cart");
   };
 
-  // 🔹 Input admin (edit)
   const handleInputChange = (id, field, value) => {
     setEditData((prev) => ({
       ...prev,
@@ -101,7 +94,6 @@ const SayurList = ({ user }) => {
     }));
   };
 
-  // 🔹 Simpan update sayur (admin)
   const handleSave = async (item) => {
     try {
       const changes = editData[item.id];
@@ -139,7 +131,6 @@ const SayurList = ({ user }) => {
   };
 
 
-  // 🔹 Batal edit admin
   const handleCancel = (id) => {
     setEditData((prev) => {
       const newData = { ...prev };
@@ -148,9 +139,8 @@ const SayurList = ({ user }) => {
     });
   };
 
-  // 🔹 Hapus sayur (admin)
   const handleDelete = (id) => {
-    setDeleteId(id); // buka modal konfirmasi
+    setDeleteId(id); 
   };
 
   const confirmDelete = async () => {
@@ -170,18 +160,16 @@ const SayurList = ({ user }) => {
         theme: "colored",
       });
     } finally {
-      setDeleteId(null); // tutup modal
+      setDeleteId(null); 
     }
   };
 
 
 
-  // 🔹 Helper ambil input admin
   const getInputValue = (item, field) => {
     return editData[item.id]?.[field] ?? item[field];
   };
 
-  // 🔹 UI
   return (
     <div className="container mx-auto px-4 py-8">
       <h2

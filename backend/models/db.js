@@ -11,7 +11,6 @@ function createConnection() {
     queueLimit: 0
   });
 
-  // coba connect beberapa kali
   function testConnection(retries = 5) {
     connection.getConnection((err) => {
       if (err) {

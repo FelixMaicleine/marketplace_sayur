@@ -4,8 +4,7 @@ import API from "../api/api";
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("ongoing"); // ongoing / done
-
+  const [activeTab, setActiveTab] = useState("ongoing"); 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
@@ -26,7 +25,6 @@ const OrdersPage = () => {
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
 
-  // filter orders berdasarkan tab
   const filteredOrders =
     activeTab === "ongoing"
       ? orders.filter((o) => o.status !== "done")

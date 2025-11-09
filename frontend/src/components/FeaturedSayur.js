@@ -54,8 +54,8 @@ const FeaturedSayur = () => {
             <img
               src={
                   s.gambar
-                    ? s.gambar // dari database (backend kirim URL lengkap)
-                    : "https://via.placeholder.com/150?text=No+Image" // fallback kalau kosong
+                    ? s.gambar 
+                    : "https://via.placeholder.com/150?text=No+Image" 
                 }
               alt={s.nama}
               className="rounded-lg h-48 w-full object-cover shadow-sm"

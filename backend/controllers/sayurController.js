@@ -1,7 +1,6 @@
 const db = require('../models/db');
 const path = require('path');
 
-// Get all sayur
 exports.getAllSayur = (req, res) => {
   db.query('SELECT * FROM sayur', (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -15,7 +14,6 @@ exports.getAllSayur = (req, res) => {
   });
 };
 
-// Get sayur by ID
 exports.getSayurById = (req, res) => {
   const { id } = req.params;
   db.query('SELECT * FROM sayur WHERE id = ?', [id], (err, results) => {
@@ -29,7 +27,6 @@ exports.getSayurById = (req, res) => {
   });
 };
 
-// Add sayur
 exports.addSayur = (req, res) => {
   const { nama, harga, stok } = req.body;
   const gambar = req.file ? req.file.filename : null;
@@ -43,7 +40,6 @@ exports.addSayur = (req, res) => {
   );
 };
 
-// Update sayur
 exports.updateSayur = (req, res) => {
   const { id } = req.params;
   const { nama, harga, stok } = req.body;
@@ -62,7 +58,6 @@ exports.updateSayur = (req, res) => {
   });
 };
 
-// Delete sayur
 exports.deleteSayur = (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM sayur WHERE id=?', [id], (err) => {

@@ -65,35 +65,26 @@ jobs:
         if: always() 
         run: docker compose -f docker-compose.yml down
 
-      # --- TAHAP PUSH (SETELAH TES LOLOS) ---
-
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }} # Perbaiki typo DOCKERHUB
-          password: ${{ secrets.DOCKERHUB_TOKEN }} # Perbaiki typo DOCKERHUB
-
+          username: ${{ secrets.DOCKERHUB_USERNAME }} 
+          password: ${{ secrets.DOCKERHUB_TOKEN }} 
       - name: Tag and Push Backend Image (dari versi lokal)
         run: |
           docker tag sayur-backend-local:test ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOCKERHUB
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOCKERHUB
           
-      # =======================================================
-      # ▼▼▼▼▼ INI BAGIAN YANG DIPERBAIKI ▼▼▼▼▼
-      # =======================================================
       - name: Build and Push Frontend Image (Production)
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          push: true # <-- Langsung push ke Docker Hub
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest # Perbaiki typo DOCKERHUB
+          push: true 
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest 
           build-args: |
             # INI KUNCINYA: Gunakan IP Publik untuk build 'final'
             REACT_APP_API_URL=http://34.143.168.92:5000/
 
-  # =======================================================
-  # ▼ JOB DEPLOYMENT (CD) - TIDAK BERUBAH
-  # =======================================================
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_test 

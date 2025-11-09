@@ -27,7 +27,6 @@ function App() {
       <div className="min-h-screen flex flex-col pt-14 bg-[#fffaf3]">
         <Navbar user={user} />
 
-        {/* Tambahkan flex-1 di sini */}
         <main className="flex-1">
           <Routes>
             {/* Halaman utama */}

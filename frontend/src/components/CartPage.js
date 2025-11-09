@@ -15,7 +15,6 @@ const CartPage = () => {
     fetchCartFromDB(user.id);
   }, []);
 
-  // 🔹 Ambil cart dari database
   const fetchCartFromDB = async (userId) => {
     try {
       const res = await API.get(`/cart/${userId}`);
@@ -26,7 +25,6 @@ const CartPage = () => {
     }
   };
 
-  // 🔹 Checkout
   const handleCheckout = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
@@ -37,8 +35,8 @@ const CartPage = () => {
     try {
       await API.post("/cart/checkout", { user_id: user.id });
       toast.success("Checkout berhasil!", { position: "top-center", autoClose: 2000, theme:"colored"});
-      setCartItems([]); // kosongkan tampilan cart
-      navigate("/orders"); // arahkan ke halaman pesanan
+      setCartItems([]); 
+      navigate("/orders"); 
     } catch (err) {
       toast.error(
         "Gagal checkout: " + (err.response?.data?.error || err.message),
@@ -47,7 +45,6 @@ const CartPage = () => {
     }
   };
 
-  // 🔹 Total harga
   const total = cartItems.reduce((acc, i) => acc + i.harga * i.quantity, 0);
 
   return (

@@ -2,13 +2,11 @@ version: "3.9"
 
 services:
   backend:
-    # 1. Diubah dari 'image' ke 'build' agar penilai bisa build dari source
     build: ./backend
     container_name: backend-api-sayur
     ports:
       - "5000:5000"
     environment:
-      # 2. Diubah agar membaca dari file .env
       - DB_HOST=mysql
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -22,11 +20,10 @@ services:
       - ./backend/uploads:/app/uploads
 
   mysql:
-    image: mysql:8 # Database boleh tetap pakai image
+    image: mysql:8 
     container_name: mysql
     restart: always
     environment:
-      # 3. Diubah agar membaca dari file .env
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
     volumes:
@@ -35,11 +32,9 @@ services:
       - sayur-network
 
   frontend:
-    # 4. Diubah dari 'image' ke 'build'
     build:
       context: ./frontend
       args:
-        # 5. Ini PENTING: Mengirim variabel dari .env ke proses build React
         - REACT_APP_API_URL=${REACT_APP_API_URL}
     container_name: frontend-sayur
     restart: always

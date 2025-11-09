@@ -17,7 +17,7 @@ const Navbar = () => {
     toast.success("✅ Logout berhasil!", { position: "top-center", autoClose: 2000, theme:"colored"});
     setTimeout(() => {
       window.location.href = "/login";
-    }, 1800); // kasih delay supaya toast sempat muncul
+    }, 1800); 
   };
 
   return (
