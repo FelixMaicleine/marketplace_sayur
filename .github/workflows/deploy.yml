@@ -70,13 +70,13 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOKCERHUB_USERNAME }} # Perbaiki typo DOKCERHUB
-          password: ${{ secrets.DOKCERHUB_TOKEN }} # Perbaiki typo DOKCERHUB
+          username: ${{ secrets.DOCKERHUB_USERNAME }} # Perbaiki typo DOCKERHUB
+          password: ${{ secrets.DOCKERHUB_TOKEN }} # Perbaiki typo DOCKERHUB
 
       - name: Tag and Push Backend Image (dari versi lokal)
         run: |
-          docker tag sayur-backend-local:test ${{ secrets.DOKCERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOKCERHUB
-          docker push ${{ secrets.DOKCERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOKCERHUB
+          docker tag sayur-backend-local:test ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOCKERHUB
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest # Perbaiki typo DOCKERHUB
           
       # =======================================================
       # ▼▼▼▼▼ INI BAGIAN YANG DIPERBAIKI ▼▼▼▼▼
@@ -86,7 +86,7 @@ jobs:
         with:
           context: ./frontend
           push: true # <-- Langsung push ke Docker Hub
-          tags: ${{ secrets.DOKCERHUB_USERNAME }}/sayur-frontend:latest # Perbaiki typo DOKCERHUB
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest # Perbaiki typo DOCKERHUB
           build-args: |
             # INI KUNCINYA: Gunakan IP Publik untuk build 'final'
             REACT_APP_API_URL=http://34.143.168.92:5000/
