@@ -63,7 +63,7 @@ jobs:
       # TAPI Docker akan pintar dan menggunakan image 'local' yang baru kita build
       # -----------------------------------------------------------------
       - name: Start Containers via Docker Compose
-        run: docker-compose -f docker-compose.yml up -d
+        run: docker compose -f docker-compose.yml up -d
 
       - name: Wait for Containers to be healthy
         run: |
@@ -89,7 +89,7 @@ jobs:
       # -----------------------------------------------------------------
       - name: Stop Test Containers
         if: always() # <-- PENTING: Selalu jalankan ini
-        run: docker-compose -f docker-compose.yml down
+        run: docker compose -f docker-compose.yml down
 
       # -----------------------------------------------------------------
       # LANGKAH 6: PUSH KE DOCKER HUB (HANYA JIKA TES LOLOS)
