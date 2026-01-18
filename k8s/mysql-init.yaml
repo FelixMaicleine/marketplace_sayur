@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  init.sql: |
+    -- 1. Buat Database (Jaga-jaga)
+    CREATE DATABASE IF NOT EXISTS db_sayur;
+    USE db_sayur;
+
+    -- 2. Tabel USERS (Berdasarkan JSON Screenshot)
+    -- Catatan: JSON kamu cuma ada id, username, role. 
+    -- Tapi Backend pasti butuh password. Saya tambah kolom password default.
+    CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(255) NOT NULL,
+        password VARCHAR(255) NOT NULL, -- Wajib ada utk login
+        role enum('user','admin') DEFAULT 'user'
+    );
+
+    -- Insert Data User dari Screenshot (Password saya set dummy '123456')
+    -- PENTING: Login mungkin gagal kalau hash password beda.
+    -- Solusi: Nanti Register user baru aja lewat website biar hash-nya benar.
+    INSERT INTO users (id, username, password, role) VALUES 
+    (1, 'admin', '$2a$10$6RsVRqtO.ViWvMT544UtP.o7u2R4XFhngNATRl2riTyN2aqAit9pa', 'admin');
+
+    -- 3. Tabel SAYUR (Berdasarkan JSON Screenshot)
+    CREATE TABLE IF NOT EXISTS sayur (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nama VARCHAR(255) NOT NULL,
+        harga INT NOT NULL,
+        stok INT DEFAULT 0,
+        gambar VARCHAR(255) -- Isinya URL panjang
+    );
+
+    -- 4. Tabel CART (Sesuai info kamu)
+    CREATE TABLE IF NOT EXISTS cart (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        sayur_id INT,
+        quantity INT
+    );
+
+    -- 5. Tabel ORDERS (Sesuai info kamu)
+    CREATE TABLE IF NOT EXISTS orders (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,
+        total INT,
+        status VARCHAR(50) DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- 6. Tabel ORDER_ITEMS (Sesuai info kamu)
+    CREATE TABLE IF NOT EXISTS order_items (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        order_id INT,
+        sayur_id INT,
+        quantity INT,
+        price INT
+    );

@@ -1,0 +1,47 @@
+name: Deploy UAS Lokal Felix
+
+# Script ini HANYA jalan kalau ada push ke branch uas-k8s
+on:
+  push:
+    branches: [ "uas-k8s" ] 
+
+jobs:
+  deploy-job:
+    # Perintah: "Gunakan agen yang terinstall di laptop ini"
+    runs-on: self-hosted 
+    
+    steps:
+    # 1. Ambil kodingan terbaru dari GitHub
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Login ke Docker Hub (Ambil kunci dari Settings GitHub tadi)
+    - name: Login ke Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 3. Build Image Backend Baru & Push ke Docker Hub
+    # Ini memastikan kodingan backend terbaru dijadikan image
+    - name: Build & Push Backend
+      uses: docker/build-push-action@v6
+      with:
+        context: ./backend
+        push: true
+        # Pastikan tag ini SAMA PERSIS dengan yang ada di k8s/4-backend.yaml kamu
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest
+
+    # 4. Deploy ke Kubernetes (Perintah ini jalan di Laptopmu)
+    - name: Deploy ke Kubernetes Lokal
+      run: |
+        echo "Agen mulai bekerja..."
+        
+        # Apply ulang konfigurasi (kalau ada perubahan di YAML k8s)
+        # Asumsi folder k8s kamu ada di root folder project
+        kubectl apply -f k8s/
+        
+        # Paksa Backend Restart supaya dia download image baru yang barusan di-push
+        kubectl rollout restart deployment/backend
+        
+        echo "✅ Sukses! Backend sudah terupdate dengan kode terbaru."
