@@ -18,31 +18,22 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # --- BAGIAN BACKEND ---
     - name: 3. Build & Push Backend
       run: |
-        echo "🔥 Membangun Backend..."
+        echo "Membangun Backend..." 
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest ./backend
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/sayur-backend:latest
 
-    # --- BAGIAN FRONTEND (BARU) ---
     - name: 4. Build & Push Frontend
       run: |
-        echo "🎨 Membangun Frontend..."
-        # Kita set API URL ke localhost karena ini jalan di laptop sendiri
+        echo "Membangun Frontend..."
         docker build --build-arg REACT_APP_API_URL=http://localhost:5000/ -t ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest ./frontend
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/sayur-frontend:latest
 
-    # --- DEPLOY KE KUBERNETES ---
     - name: 5. Update Kubernetes
       run: |
-        echo "🚀 Deploying to Local Kubernetes..."
-        
-        # Apply ulang semua file YAML (Config, Backend, Frontend)
+        echo "Deploying to Local Kubernetes..."
         kubectl apply -f k8s/
-        
-        # Paksa Restart Backend & Frontend biar image baru ketarik
         kubectl rollout restart deployment/backend
         kubectl rollout restart deployment/frontend
-        
-        echo "✅ Selesai! Web & API sudah terupdate."
+        echo "Selesai! Web & API sudah terupdate."
