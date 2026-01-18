@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: sayur-frontend:local # Sesuaikan nama image
-        imagePullPolicy: Never
+        image: felixmaicleine/sayur-frontend:latest 
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 ---
